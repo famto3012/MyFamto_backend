@@ -72,7 +72,7 @@ public class RestaurantData {
     private Double latitude;
     @Column(name = "longitude")
     private Double longitude;
-    @Column(name = "registration_approved")
+    @Column(name = "registration_approved", columnDefinition = "boolean default false")
     private boolean registrationApproved;
     @Column(name = "status")
     private String status;

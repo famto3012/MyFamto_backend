@@ -448,7 +448,36 @@ public class RestaurantController {
             return false;
         }
     }
-    
 
+    @PutMapping("/{restaurantId}/approve")
+    public ResponseEntity<RestaurantData> approveRestaurantRegistration(@PathVariable Long restaurantId) {
+        // Retrieve the restaurant from the database
+        RestaurantData restaurant = restaurantRepo.findById(restaurantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found with id: " + restaurantId));
+
+        // Update the registration approval status
+        restaurant.setRegistrationApproved(true);
+
+        // Save the updated restaurant data
+        RestaurantData updatedRestaurant = restaurantRepo.save(restaurant);
+
+        return ResponseEntity.ok(updatedRestaurant);
     }
+
+    @PutMapping("/{restaurantId}/decline")
+    public ResponseEntity<RestaurantData> declineRestaurantRegistration(@PathVariable Long restaurantId) {
+        // Retrieve the restaurant from the database
+        RestaurantData restaurant = restaurantRepo.findById(restaurantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found with id: " + restaurantId));
+
+        // Update the registration approval status
+        restaurant.setRegistrationApproved(false);
+
+        // Save the updated restaurant data
+        RestaurantData updatedRestaurant = restaurantRepo.save(restaurant);
+
+        return ResponseEntity.ok(updatedRestaurant);
+    }
+
+}
 
