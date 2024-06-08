@@ -28,12 +28,9 @@ public class CustomerData implements Serializable {
     private int customerId;
     @Column(name = "name")
     private String name;
-    @Column(name = "email")
-    private String email;
-    @Column(name = "phone")
-    private String phone;
-    @Column(name = "password")
-    private String password;
+    @ManyToOne
+    @JoinColumn(name = "user_id") // Assuming the column in the restaurant_data table is named "user_id"
+    private User user;
     @Column(name = "total_wallet_balance")
     private Double totalWalletBalance;
     @Convert(converter = AddressConvertorClass.class)
@@ -80,8 +77,8 @@ public class CustomerData implements Serializable {
     @Column(name = "houseNo")
     private String houseNo;
 
-    @Column(name = "is_blocked")
-    private Boolean blocked;
+    @Column(name = "reason_for_blocking")
+    private String blocked;
 
     @Column(name = "amount")
     private Boolean amount;
@@ -122,11 +119,11 @@ public class CustomerData implements Serializable {
         this.houseNo = houseNo;
     }
 
-    public Boolean getBlocked() {
+    public String getBlocked() {
         return blocked;
     }
 
-    public void setBlocked(Boolean blocked) {
+    public void setBlocked(String blocked) {
         this.blocked = blocked;
     }
 
@@ -146,14 +143,7 @@ public class CustomerData implements Serializable {
         this.address = address;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
+  
     public String getLastUsedPlatform() {
         return lastUsedPlatform;
     }
@@ -226,21 +216,7 @@ public class CustomerData implements Serializable {
         this.name = name;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
+   
 
     public Double getWalletBalance() {
         return walletBalance;

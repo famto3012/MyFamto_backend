@@ -411,10 +411,9 @@ public class RestaurantController {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
 
-        Long restaurantId = user.getRestaurant().getRestaurantId();
         
-        RestaurantData restaurant = restaurantRepo.findById(restaurantId)
-            .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found with id: " + restaurantId));
+        RestaurantData restaurant = restaurantRepo.findByUserId(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found with id: " + id));
 
         
 

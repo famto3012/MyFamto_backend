@@ -1,8 +1,13 @@
 package com.example.famto.controller;
 
+import com.example.famto.dto.BlockRequest;
 import com.example.famto.entity.CustomerData;
+import com.example.famto.entity.RestaurantData;
+import com.example.famto.entity.User;
 import com.example.famto.exception.ResourceNotFoundException;
 import com.example.famto.repository.CustomerRepo;
+import com.example.famto.repository.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +23,9 @@ public class CustomerController {
 
     @Autowired
     private CustomerRepo customerRepo;
-
+    
+    @Autowired
+    private UserRepository userRepository;
     // get all customer
     @GetMapping
     public List<CustomerData> getAllCustomers() {
@@ -50,15 +57,7 @@ public class CustomerController {
         if (customerData.getName() != null) {
             existingCustomer.setName(customerData.getName());
         }
-        if (customerData.getEmail() != null) {
-            existingCustomer.setEmail(customerData.getEmail());
-        }
-        if (customerData.getPhone() != null) {
-            existingCustomer.setPhone(customerData.getPhone());
-        }
-        if (customerData.getPassword() != null) {
-            existingCustomer.setPassword(customerData.getPassword());
-        }
+      
         if (customerData.getLastUsedPlatform() != null) {
             existingCustomer.setLastUsedPlatform(customerData.getLastUsedPlatform());
         }
@@ -126,32 +125,36 @@ public class CustomerController {
         return customers;
     }
 
-    // Helper method to update customer block status
-    private CustomerData updateCustomerBlockStatus(int customerId, boolean blockedStatus) {
-        CustomerData customer = customerRepo.findById(customerId)
-                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id: " + customerId));
+   @PutMapping("/block/{id}")
+    public ResponseEntity<User> toggleBlockStatus(@PathVariable Long id, @RequestBody BlockRequest blockRequest) {
+        // Retrieve the user from the database
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
 
-        customer.setBlocked(blockedStatus); // Update the blocked status
-        // You may want to perform additional actions here, like logging the action
+        
+        CustomerData customer = customerRepo.findByUserId(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found with id: " + id));
 
-        return customerRepo.save(customer);
+        
+
+        // Update the blocked status
+        if(!user.isBlock()){
+            user.setBlock(true);
+            customer.setBlocked(blockRequest.getReasonForBlocking());
+        }else{
+            user.setBlock(false);
+            customer.setBlocked(null);
+        }
+
+
+        // Save the updated user
+        User updatedUser = userRepository.save(user);
+        return ResponseEntity.ok(updatedUser);
     }
 
-    // Block customer by ID
-    @PutMapping("/{customerId}/block")
-    public ResponseEntity<CustomerData> blockCustomer(@PathVariable("customerId") int customerId) {
-        CustomerData blockedCustomer = updateCustomerBlockStatus(customerId, true);
-        return ResponseEntity.ok(blockedCustomer);
-    }
+   
 
-    // Unblock customer by ID
-    @PutMapping("/{customerId}/unblock")
-    public ResponseEntity<CustomerData> unblockCustomer(@PathVariable("customerId") int customerId) {
-        CustomerData unblockedCustomer = updateCustomerBlockStatus(customerId, false);
-        return ResponseEntity.ok(unblockedCustomer);
-    }
-
-    // Other controller methods...
+   
 
 }
 

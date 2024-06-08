@@ -47,10 +47,6 @@ public class User {
 
     private Long phoneNumber;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "restaurant_id")
-    @JsonBackReference
-    private RestaurantData restaurant;
 
     @Column(name = "block", columnDefinition = "boolean default false")
     private boolean block;

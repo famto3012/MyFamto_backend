@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 
@@ -16,6 +17,8 @@ public interface RestaurantRepo extends JpaRepository<RestaurantData, Long> {
     List<RestaurantData> searchRestaurants(String query);
 
     List<RestaurantData> findByReasonForBlockingIsNull();
+
+    Optional<RestaurantData> findByUserId(Long userId);
 
 
 
